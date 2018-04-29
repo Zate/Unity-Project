@@ -316,6 +316,10 @@ Prefab:
       propertyPath: m_AngularDrag
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11407356, guid: b662834559fde40dcb0404655bdb7ea7, type: 2}
+      propertyPath: mapGen
+      value: 
+      objectReference: {fileID: 509230442}
     m_RemovedComponents:
     - {fileID: 3304896, guid: b662834559fde40dcb0404655bdb7ea7, type: 2}
     - {fileID: 2303384, guid: b662834559fde40dcb0404655bdb7ea7, type: 2}
@@ -350,8 +354,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1647bbaf26a4040d3bc6ffe5c06dd0d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 64
-  height: 64
+  width: 128
+  height: 128
   playerStartX: 0
   playerStartY: 0
   seed: 0

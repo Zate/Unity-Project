@@ -9,10 +9,11 @@ public class Player2D : MonoBehaviour {
 
 	private Vector3 startPos;
 
+	public MapGenerator mapGen;
+
 	void Start()
 	{
 		rb2d = GetComponent<Rigidbody2D> ();
-		MapGenerator mapGen = GetComponent<MapGenerator>();
 		startPos = mapGen.PlayerStart();
 		Debug.Log("playerx" + startPos.x );
 	}

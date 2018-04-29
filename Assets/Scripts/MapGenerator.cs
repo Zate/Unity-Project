@@ -23,7 +23,7 @@ public class MapGenerator : MonoBehaviour {
         Debug.developerConsoleVisible = true;
     	
 		GenerateMap();
-		// transform.position = PlayerStart();
+		//PlayerStart();
 	}
 
 	void Update() {
@@ -35,7 +35,7 @@ public class MapGenerator : MonoBehaviour {
 	}
 
 	public Vector3 PlayerStart() {
-		List<List<Coord>> startRegions = GetRegions (0);
+		List<List<Coord>> startRegions = GetRegions(0);
 		List<Room> startRooms = new List<Room> ();
 		
 		foreach (List<Coord> startRegion in startRegions) {
