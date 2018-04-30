@@ -3,11 +3,11 @@ using System.Collections;
 
 public class Player : MonoBehaviour {
 
-	Rigidbody rigidbody;
+	Rigidbody rgdbody;
 	Vector3 velocity;
 	
 	void Start () {
-		rigidbody = GetComponent<Rigidbody> ();
+		rgdbody = GetComponent<Rigidbody> ();
 	}
 
 	void Update () {
@@ -15,6 +15,6 @@ public class Player : MonoBehaviour {
 	}
 
 	void FixedUpdate() {
-		rigidbody.MovePosition (rigidbody.position + velocity * Time.fixedDeltaTime);
+		rgdbody.MovePosition (rgdbody.position + velocity * Time.fixedDeltaTime);
 	}
 }

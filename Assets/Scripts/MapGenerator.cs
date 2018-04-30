@@ -7,11 +7,15 @@ public class MapGenerator : MonoBehaviour {
 
 	public int width;
 	public int height;
-	public int playerStartX = 0;
-	public int playerStartY = 0;
+	public float playerStartX = 0;
+	public float playerStartY = 0;
 
 	public int seed;
 	public bool useRandomSeed;
+
+	public GameObject player;
+	public GameObject spawnPortal;
+	public GameObject portal;
 
 	[Range(0,100)]
 	public int randomFillPercent;
@@ -23,53 +27,58 @@ public class MapGenerator : MonoBehaviour {
         Debug.developerConsoleVisible = true;
     	
 		GenerateMap();
-		//PlayerStart();
+		// player.transform.position = PlayerStart();
 	}
 
 	void Update() {
 		if (Input.GetKeyDown("space")) {
 			GenerateMap();
-			// transform.position = PlayerStart();
+			// player.transform.position = PlayerStart();
 			
 		}
 	}
 
-	public Vector3 PlayerStart() {
-		List<List<Coord>> startRegions = GetRegions(0);
-		List<Room> startRooms = new List<Room> ();
+	// public Vector3 PlayerStart() {
+	// 	List<List<Coord>> startRegions = GetRegions(0);
+	// 	List<Room> startRooms = new List<Room> ();
 		
-		foreach (List<Coord> startRegion in startRegions) {
+	// 	foreach (List<Coord> startRegion in startRegions) {
 			
-				startRooms.Add(new Room(startRegion, map));
-		}
+	// 			startRooms.Add(new Room(startRegion, map));
+	// 	}
 
-		if (useRandomSeed) {
-			UnityEngine.Random.InitState(Time.time.GetHashCode());
-		} else {
-			UnityEngine.Random.InitState(seed);
-		}
+	// 	if (useRandomSeed) {
+	// 		UnityEngine.Random.InitState(Time.time.GetHashCode());
+	// 	} else {
+	// 		UnityEngine.Random.InitState(seed);
+	// 	}
 		
 
-		// while(true) {
-			int randRoom = UnityEngine.Random.Range(0,startRooms.Count);
-			int randTile = UnityEngine.Random.Range(0,startRooms[randRoom].tiles.Count);
-			
+		
+	// 		int randRoom = UnityEngine.Random.Range(0,startRooms.Count);
+	// 		int randTile = UnityEngine.Random.Range(0,startRooms[randRoom].tiles.Count);
+	// 		// playerStartX = UnityEngine.Random.Range(-width/2,width/2);
+	// 		// playerStartY = UnityEngine.Random.Range(-height/2,height/2);
+	// 		playerStartX = CoordToSpawnPoint(startRooms[randRoom].tiles[randTile]).x;
+	// 		playerStartY = CoordToSpawnPoint(startRooms[randRoom].tiles[randTile]).y;
+	// 		// playerStartX = startRooms[randRoom].tiles[randTile].tileX;
+	// 		// playerStartY = startRooms[randRoom].tiles[randTile].tileY;
+	// 		// // if (startRooms [randRoom].isMainRoom == true && startRooms [randRoom].isAccessibleFromMainRoom == true) {
+	// 		// if (IsInMapRange(playerStartX,playerStartY)){
+	// 			Debug.Log ("playerStartX:" +playerStartX);
+	// 			Debug.Log ("playerStartY:" +playerStartY);
+	// 			//Debug.Log ("Map is " + map[playerStartX,playerStartY]);
+	// 		// } else {
+	// 		// 	Debug.Log ("[" + playerStartX + "," + playerStartY + "] is not in map range");
+	// 		// }
+	// 		return CoordToSpawnPoint(startRooms[randRoom].tiles[randTile]);
+	// 		// }
+	// 	// }
+	// }
 
-			playerStartX = startRooms[randRoom].tiles[randTile].tileX;
-			playerStartY = startRooms[randRoom].tiles[randTile].tileY;
-			// if (startRooms [randRoom].isMainRoom == true && startRooms [randRoom].isAccessibleFromMainRoom == true) {
-			if (IsInMapRange(playerStartX,playerStartY)){
-				Debug.Log ("playerStartX:" +playerStartX);
-				Debug.Log ("playerStartY:" +playerStartY);
-			} else {
-				Debug.Log ("[" + playerStartX + "," + playerStartY + "] is not in map range");
-			}
-				return new Vector3(playerStartX,playerStartY,0);
-			// }
-		// }
-	}
+	
 
-	void GenerateMap() {
+	public void GenerateMap() {
 		map = new int[width,height];
 		RandomFillMap();
 
@@ -96,6 +105,7 @@ public class MapGenerator : MonoBehaviour {
 		MeshGenerator meshGen = GetComponent<MeshGenerator>();
 		meshGen.GenerateMesh(borderedMap, 1);
 	}
+	
 
 	void ProcessMap() {
 		List<List<Coord>> wallRegions = GetRegions (1);
@@ -128,6 +138,35 @@ public class MapGenerator : MonoBehaviour {
 		survivingRooms [0].isAccessibleFromMainRoom = true;
 
 		ConnectClosestRooms (survivingRooms);
+
+		if (useRandomSeed) {
+			UnityEngine.Random.InitState(Time.time.GetHashCode());
+		} else {
+			UnityEngine.Random.InitState(seed);
+		}
+		
+
+		// Starting player position
+		int randRoom = UnityEngine.Random.Range(0,survivingRooms.Count);
+		int randTile = UnityEngine.Random.Range(0,survivingRooms[randRoom].tiles.Count);
+		playerStartX = CoordToSpawnPoint(survivingRooms[randRoom].tiles[randTile]).x;
+		playerStartY = CoordToSpawnPoint(survivingRooms[randRoom].tiles[randTile]).y;
+		
+		Debug.Log ("playerStartX:" +playerStartX);
+		Debug.Log ("playerStartY:" +playerStartY);
+		
+		player.transform.position = CoordToSpawnPoint(survivingRooms[randRoom].tiles[randTile]);
+		spawnPortal.transform.position = CoordToSpawnPoint(survivingRooms[randRoom].tiles[randTile]);
+
+		randRoom = UnityEngine.Random.Range(0,survivingRooms.Count);
+		randTile = UnityEngine.Random.Range(0,survivingRooms[randRoom].tiles.Count);
+		float portalStartX = CoordToSpawnPoint(survivingRooms[randRoom].tiles[randTile]).x;
+		float portalStartY = CoordToSpawnPoint(survivingRooms[randRoom].tiles[randTile]).y;
+		
+		Debug.Log ("portalStartX:" +portalStartX);
+		Debug.Log ("portalStartY:" +portalStartY);
+		
+		portal.transform.position = CoordToSpawnPoint(survivingRooms[randRoom].tiles[randTile]);
 
 
 	}
@@ -281,6 +320,10 @@ public class MapGenerator : MonoBehaviour {
 		return new Vector3 (-width / 2 + .5f + tile.tileX, 2, -height / 2 + .5f + tile.tileY);
 	}
 
+	Vector3 CoordToSpawnPoint(Coord tile) {
+		return new Vector3 (-width / 2 + .5f + tile.tileX, -height / 2 + .5f + tile.tileY, 0);
+	}
+
 	List<List<Coord>> GetRegions(int tileType) {
 		List<List<Coord>> regions = new List<List<Coord>> ();
 		int[,] mapFlags = new int[width,height];
@@ -334,11 +377,11 @@ public class MapGenerator : MonoBehaviour {
 
 
 	void RandomFillMap() {
-		// if (useRandomSeed) {
-		// 	seed = Time.time.ToString();
-		// }
-
-		// System.Random pseudoRandom = new System.Random(seed.GetHashCode());
+		if (useRandomSeed) {
+			UnityEngine.Random.InitState(Time.time.GetHashCode());
+		} else {
+			UnityEngine.Random.InitState(seed);
+		}
 
 		for (int x = 0; x < width; x ++) {
 			for (int y = 0; y < height; y ++) {
